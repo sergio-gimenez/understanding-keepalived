@@ -96,6 +96,11 @@ Jul 31 13:45:58 sergio05 Keepalived_vrrp[25873]: (VI_1) Entering BACKUP STATE
 Install nginx in both nodes (simply, using docker). Make sure you have [docker](https://docs.docker.com/engine/install/ubuntu/) and [docker-compose](https://gist.github.com/sergio-gimenez/c5910d112e677d81c8107344b560b73b) installed.
 
 ```bash
+cd nginx
+docker-compose up -d
+```
+
+Make sure to change the html content in order to know if you are using the nginx in node 1 or node 2.
 
 
 
