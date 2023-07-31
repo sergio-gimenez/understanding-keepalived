@@ -1,5 +1,7 @@
 # Simple setup for HA with two nodes and nginx integration
 
+This repo is highly inspired on the following article: [Meet keepalived - High Availability and Load Balancing in One](https://technotim.live/posts/keepalived-ha-loadbalancer/#installation).
+
 ## Pre-requisites
 
 * Two nodes with linux (ubuntu in this case) and with static IP addresses.
