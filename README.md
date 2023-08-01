@@ -104,7 +104,6 @@ docker-compose up -d
 
 Make sure to change the html content in order to know if you are using the nginx in node 1 or node 2.
 
+If want to test healthcheck, copy the `keepalived.conf.master.hc` and `keepalived.conf.backup.hc` into the `/etc/keepalived/keepalived.conf` file in node 1 and node 2 respectively. Make sure to rename them properly. Also, copy the healthcheck script into `/etc/keepalived/healthcheck.sh` in both nodes.
 
-
-
-
+```bash

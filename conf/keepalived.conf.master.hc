@@ -18,4 +18,10 @@ vrrp_instance VI_1 { # Instance name of keepalived
     192.168.200.130/24 # Pool of available adresses
   }
 
+  vrrp_script check_nginx {
+    script "./nginx_health_check.sh"  # Replace with the actual path of your script
+    interval 10  # Interval in seconds between script execution
+    weight 2  # Weight assigned to the script (used in VRRP priority calculation)
+  }
+
 }
