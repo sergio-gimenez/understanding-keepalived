@@ -1,4 +1,4 @@
-# Simple setup for HA with two nodes and nginx integration
+# Understanding High Availability Mechanisms with Keepalived
 
 This repo is highly inspired on the following article: [Meet keepalived - High Availability and Load Balancing in One](https://technotim.live/posts/keepalived-ha-loadbalancer/#installation).
 
@@ -93,7 +93,7 @@ Jul 31 13:45:58 sergio05 Keepalived_vrrp[25873]: (VI_1) Master received advert f
 Jul 31 13:45:58 sergio05 Keepalived_vrrp[25873]: (VI_1) Entering BACKUP STATE
 ```
 
-## Nginx Setup
+## Healthcheck Setup 
 
 Install nginx in both nodes (simply, using docker). Make sure you have [docker](https://docs.docker.com/engine/install/ubuntu/) and [docker-compose](https://gist.github.com/sergio-gimenez/c5910d112e677d81c8107344b560b73b) installed.
 
@@ -104,7 +104,13 @@ docker-compose up -d
 
 Make sure to change the html content in order to know if you are using the nginx in node 1 or node 2.
 
-If want to test healthcheck, copy the `keepalived.conf.master.hc` and `keepalived.conf.backup.hc` into the `/etc/keepalived/keepalived.conf` file in node 1 and node 2 respectively. Make sure to rename them properly. Also, copy the healthcheck script into `/us/local/bin/healthcheck.sh` in both nodes.
+Make sure you add the `keepalived_script` user in all nodes because by default, `keepalived` tries to run the healthcheck script as `keepalived` user, otherwise falls to `root` user (which btw is not recommended by them in their [official docs](https://manpages.debian.org/unstable/keepalived/keepalived.conf.5.en.html#SCRIPTS))
+
+```bash
+sudo adduser --system keepalived_script
+```
+
+If want to test healthcheck, go to the `/conf/2-node-setup` directory of this project and copy the `keepalived.conf.master.hc` and `keepalived.conf.backup.hc` into the `/etc/keepalived/keepalived.conf` file in node 1 and node 2 respectively. Make sure to rename them properly. Also, copy the healthcheck script into `/us/local/bin/healthcheck.sh` in both nodes. If you want to test it with three nodes, then just copy the three conf files in every node.
 
 Log output should be something like that:
 
@@ -124,3 +130,20 @@ Aug 03 09:50:04 sergio01 Keepalived_vrrp[280493]: VRRP_Script(check_nginx) succe
 Aug 03 09:50:04 sergio01 Keepalived_vrrp[280493]: (VI_1) Changing effective priority from 150 to 152
 Aug 03 09:50:07 sergio01 Keepalived_vrrp[280493]: (VI_1) Entering MASTER STATE
 ```
+
+## Priority Mechanics
+
+### Two Node Set Up
+
+Priority is essential to understand how `keepalived` works. Let's describe in a detailed way the workflow of this setup.
+
+1. Initially, `p_n1 = 50` and `p_n2 = 1`. Node 1 is the master.
+2. Nginx up in both nodes. Healtheck successful in both nodes. `p_n1 = 150` and `p_n2 = 100`. Node 1 is the master.
+3. Let's say Node 1 (master) has some issues with `nginx` (you can kill container with a `docker-compose down`). Node 1 will stop responding to healthchecks, then will loose 100 points because the healthcheck script failed. Then, `p_n1 = 50` and `p_n2 = 100`. Node 2 is the master.
+
+### Three Node Set Up
+
+1. Initially, `p_n1 = 50`, `p_n2 = 1` and `p_n3 = 2`. Node 1 is the master.
+2. Nginx is up in all nodes. Healthcheck successful in all nodes. `p_n1 = 150`, `p_n2 = 101` and `p_n3 = 102`. Node 1 is the master.
+3. Let's ssay Node 1 (master) has some issues with `nginx` (you can kill container with a `docker-compose down`). Node 1 will stop responding to healthchecks, then will loose 100 points because the healthcheck script failed. Then, `p_n1 = 50`, `p_n2 = 101` and `p_n3 = 102`. Node 2 is the master.
+4. Now, let's say Node 2 (master) has some issues with `nginx`. Node 2 will stop responding to healthchecks, then will loose 100 points. Then, `p_n1 = 50`, `p_n2 = 101` and `p_n3 = 2`. Node 2 is the master.

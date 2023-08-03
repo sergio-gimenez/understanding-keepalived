@@ -17,6 +17,7 @@ vrrp_instance VI_1 { # Instance name of keepalived
   unicast_src_ip 192.168.200.20 # This machine itself 
   unicast_peer {
     192.168.200.52 # The other node 
+    192.168.200.40 # The other node 
   }
 
   authentication { # Authentication between peers. Password must be shared
