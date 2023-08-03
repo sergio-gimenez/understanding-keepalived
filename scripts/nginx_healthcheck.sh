@@ -8,8 +8,8 @@ response=$(curl -s -o /dev/null -w "%{http_code}" "$server_url")
 
 # Check if curl encountered an error
 if [ $? -ne 0 ]; then
-    echo "0"
-    exit 0
+    echo "1"
+    exit 1
 fi
 
 if [ "$response" = "200" ]; then
