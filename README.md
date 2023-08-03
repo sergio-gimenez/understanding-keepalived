@@ -104,6 +104,23 @@ docker-compose up -d
 
 Make sure to change the html content in order to know if you are using the nginx in node 1 or node 2.
 
-If want to test healthcheck, copy the `keepalived.conf.master.hc` and `keepalived.conf.backup.hc` into the `/etc/keepalived/keepalived.conf` file in node 1 and node 2 respectively. Make sure to rename them properly. Also, copy the healthcheck script into `/etc/keepalived/healthcheck.sh` in both nodes.
+If want to test healthcheck, copy the `keepalived.conf.master.hc` and `keepalived.conf.backup.hc` into the `/etc/keepalived/keepalived.conf` file in node 1 and node 2 respectively. Make sure to rename them properly. Also, copy the healthcheck script into `/us/local/bin/healthcheck.sh` in both nodes.
+
+Log output should be something like that:
 
 ```bash
+...
+Aug 03 09:50:04 sergio01 Keepalived[280492]: NOTICE: setting config option max_auto_priority should result in better
+keepalived performance
+Aug 03 09:50:04 sergio01 Keepalived[280492]: Starting VRRP child process, pid=280493
+Aug 03 09:50:04 sergio01 Keepalived[280492]: Startup complete
+Aug 03 09:50:04 sergio01 Keepalived_vrrp[280493]: SECURITY VIOLATION - scripts are being executed but script_security
+ not enabled.
+Aug 03 09:50:04 sergio01 Keepalived_vrrp[280493]: (VI_1) Entering BACKUP STATE (init)
+Aug 03 09:50:04 sergio01 systemd[1]: keepalived.service: Got notification message from PID 280493, but reception only
+ permitted for main PID 280492
+Aug 03 09:50:04 sergio01 systemd[1]: Started Keepalive Daemon (LVS and VRRP).
+Aug 03 09:50:04 sergio01 Keepalived_vrrp[280493]: VRRP_Script(check_nginx) succeeded
+Aug 03 09:50:04 sergio01 Keepalived_vrrp[280493]: (VI_1) Changing effective priority from 150 to 152
+Aug 03 09:50:07 sergio01 Keepalived_vrrp[280493]: (VI_1) Entering MASTER STATE
+```
