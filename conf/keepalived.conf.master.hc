@@ -1,3 +1,13 @@
+# Make sure scripts are defined before the vrrp_instance block, otherwise keepalived was
+# complaining about the scripts not being found.
+# Note that By default the scripts will be executed by user keepalived_script if that user exists, or if not by root,
+# but for each script the user/group under which it is to be executed can be specified.
+vrrp_script check_nginx {
+  script /usr/local/bin/nginx_healthcheck.sh  # Replace with the actual path of your script
+  interval 10 # Interval in seconds between script execution
+  weight 2 # Weight assigned to the script (used in VRRP priority calculation)
+}
+
 vrrp_instance VI_1 { # Instance name of keepalived 
   state MASTER # Default state when this instance come up (the other option is BACKUP)
   interface eth0 # Interface that keepalived is listening at
@@ -11,17 +21,14 @@ vrrp_instance VI_1 { # Instance name of keepalived
 
   authentication { # Authentication between peers. Password must be shared
     auth_type PASS
-    auth_pass e^Ho6HWa
+    auth_pass e^Ho6HWa # Maximum 8 characters
   }
 
   virtual_ipaddress {
-    192.168.200.130/24 # Pool of available adresses
+    192.168.200.130/24
   }
 
-  vrrp_script check_nginx {
-    script "./nginx_health_check.sh"  # Replace with the actual path of your script
-    interval 10  # Interval in seconds between script execution
-    weight 2  # Weight assigned to the script (used in VRRP priority calculation)
+  track_script { # 0 Means successfull, 1 means failure
+    check_nginx 
   }
-
 }

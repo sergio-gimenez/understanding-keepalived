@@ -13,9 +13,9 @@ if [ $? -ne 0 ]; then
 fi
 
 if [ "$response" = "200" ]; then
-    echo "1"
-    exit 1
-else
     echo "0"
     exit 0
+else
+    echo "1"
+    exit 1
 fi
