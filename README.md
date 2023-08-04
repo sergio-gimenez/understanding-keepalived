@@ -145,5 +145,5 @@ Priority is essential to understand how `keepalived` works. Let's describe in a 
 
 1. Initially, `p_n1 = 50`, `p_n2 = 1` and `p_n3 = 2`. Node 1 is the master.
 2. Nginx is up in all nodes. Healthcheck successful in all nodes. `p_n1 = 150`, `p_n2 = 101` and `p_n3 = 102`. Node 1 is the master.
-3. Let's ssay Node 1 (master) has some issues with `nginx` (you can kill container with a `docker-compose down`). Node 1 will stop responding to healthchecks, then will loose 100 points because the healthcheck script failed. Then, `p_n1 = 50`, `p_n2 = 101` and `p_n3 = 102`. Node 2 is the master.
+3. Let's ssay Node 1 (master) has some issues with `nginx` (you can kill container with a `docker-compose down`). Node 1 will stop responding to healthchecks, then will loose 100 points because the healthcheck script failed. Then, `p_n1 = 50`, `p_n2 = 101` and `p_n3 = 102`. Node 3 is the master.
 4. Now, let's say Node 2 (master) has some issues with `nginx`. Node 2 will stop responding to healthchecks, then will loose 100 points. Then, `p_n1 = 50`, `p_n2 = 101` and `p_n3 = 2`. Node 2 is the master.
